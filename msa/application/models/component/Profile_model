@@ -1,0 +1,366 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+/**
+ * User_model class.
+ * 
+ * @extends CI_Model
+ */
+class Profile_model extends CI_Model {
+
+	/**
+	 * __construct function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function __construct() {
+		
+		parent::__construct();
+		$this->load->database();
+		
+	}
+	
+	/**
+	 * create_user function.
+	 * 
+	 * @access public
+	 * @param mixed $username
+	 * @param mixed $email
+	 * @param mixed $password
+	 * @return bool true on success, false on failure
+	 */
+	public function create_user($username, $email, $password) {
+		$link=$this->hash_password(date('Y-m-j H:i:s').$email);
+		$clear = trim(preg_replace('/ +/', '', preg_replace('/[^A-Za-z0-9 ]/', '', urldecode(html_entity_decode(strip_tags($link))))));
+		$data = array(
+			'username'   => $username,
+			'email'      => $email,
+			'password'   => $this->hash_password($password),
+			'created' => date('Y-m-j H:i:s'),
+			'confirm_key'=>$clear
+		);
+		
+		$this->db->insert('user', $data);
+		$id = $this->db->insert_id();
+		$this->db->from('user');
+		$this->db->where('id', $id);
+		$query = $this ->db->get();
+		if($query->num_rows() == 1){
+		 	$this->load->library('email');
+			$this->email->from('info@synskill.com', 'Synskill');
+			$this->email->to($email);
+			$this->email->subject('Synskill');
+			$this->email->message($clear);
+		;return $query->result();
+		}
+		else{
+		 return false;
+		}
+		
+	}
+	
+	/**
+	 * resolve_user_login function.
+	 * 
+	 * @access public
+	 * @param mixed $username
+	 * @param mixed $password
+	 * @return bool true on success, false on failure
+	 */
+	public function resolve_user_login($username, $password) {
+		
+		$this->db->select('password');
+		$this->db->from('user');
+		$this->db->where('email', $username);
+		$hash = $this->db->get()->row('password');		
+		return $this->verify_password_hash($password, $hash);
+		
+	}
+	
+	/**
+	 * get_user_id_from_username function.
+	 * 
+	 * @access public
+	 * @param mixed $email
+	 * @return int the user id
+	 */
+	public function get_user_id_from_email($email) {
+		
+		$this->db->select('id');
+		$this->db->from('user');
+		$this->db->where('email', $email);
+
+		return $this->db->get()->row('id');
+		
+	}
+		/**
+	 * get_user_id_from_username function.
+	 * 
+	 * @access public
+	 * @param mixed $username
+	 * @return int the user id
+	 */
+	public function get_user_id_from_username($username) {
+		
+		$this->db->select('id');
+		$this->db->from('user');
+		$this->db->where('username', $username);
+
+		return $this->db->get()->row('id');
+		
+	}
+	/**
+	 * get_user_id_from_userkey function.
+	 * 
+	 * @access public
+	 * @param mixed $username
+	 * @return int the user id
+	 */
+	public function get_user_id_from_userkey($userkey) {
+		
+		$this->db->select('id');
+		$this->db->from('user');
+		$this->db->where('userkey', $userkey);
+
+		return $this->db->get()->row('id');
+		
+	}
+	/**
+	 * get_user_id_from_userkey function.
+	 * 
+	 * @access public
+	 * @param mixed $username
+	 * @return int the user id
+	 */
+	public function get_user_info_by_username($username) {
+		
+	
+		$this->db->from('user');
+		$this->db->where('username', $username);
+
+		$query = $this ->db->get();
+		if($query->num_rows() != 0 ){
+		 return $query->result_array()[0];
+		}
+		else{
+		 return false;
+		}
+		
+	}
+	/**
+	 * get_user info function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return object the user object
+	 */
+	public function get_user($user_id) {
+		
+		$this->db->from('user');
+		$this->db->where('id', $user_id);
+		$query = $this ->db->get();
+		if($query->num_rows() == 1){
+		 return $query->result();
+		}
+		else{
+		 return false;
+		}
+		
+	}
+	
+		/**
+	 * save_user_info function.
+	 * 
+	 * @access public
+	 * @param mixed $data
+	 * @return insert user id
+	 */
+	public function save_user_info($data) {
+				
+	return	$this->db->insert_batch('basicinformation', $data);
+		 		
+	}
+
+	/**
+	 * hash_password function.
+	 * 
+	 * @access private
+	 * @param mixed $password
+	 * @return string|bool could be a string on success, or bool false on failure
+	 */
+	private function hash_password($password) {
+		
+		return password_hash($password, PASSWORD_BCRYPT);
+		
+	}
+	
+	/**
+	 * verify_password_hash function.
+	 * 
+	 * @access private
+	 * @param mixed $password
+	 * @param mixed $hash
+	 * @return bool
+	 */
+	private function verify_password_hash($password, $hash) {
+		
+		
+		
+		return password_verify($password, $hash);
+		
+		
+	}
+
+		/**
+	 * check_user_active_link function.
+	 * 
+	 * @access public
+	 * @param mixed $link
+	 * @return int the user id
+	 */
+	public function check_update_user_active_link($link) {
+		
+		$this->db->select('id');
+		$this->db->from('user');
+		$this->db->where('confirm_key', $link);
+		$id=$this->db->get()->row('id');
+		if($id)
+		{
+			$this->db->where('id', $id);
+		    $this->db->update('user', array('is_confirmed' => '1'));
+		    return true;
+		}
+		
+	}
+
+
+	/**
+	 * get_user_firstname_by_id function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return object the user object
+	 */
+	public function get_user_firstname_by_id($user_id) {
+		
+		$this->db->from('basicinformation');
+		$this->db->where('user_id', $user_id);
+		$this->db->where('type', 'Firstname');
+		$query = $this ->db->get();
+		if($query->num_rows() != 0 ){
+		 return $query->result_array();
+		}
+		else{
+		 return false;
+		}
+		
+	}
+	/**
+	 * get_user_base_info_by_id function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return object the user object
+	 */
+	public function get_user_base_info_by_id($user_id) {
+		
+		$this->db->from('basicinformation');
+		$this->db->where('user_id', $user_id);
+		$query = $this ->db->get();
+		if($query->num_rows() != 0 ){
+		 return $query->result_array();
+		}
+		else{
+		 return false;
+		}
+		
+	}
+
+	/**
+	 * get_user_contact_info_by_id function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return object the user object
+	 */
+	public function get_user_contact_info_by_id($user_id) {
+		
+		$this->db->from('contact');
+		$this->db->where('user_id', $user_id);
+		$query = $this ->db->get();
+		if($query->num_rows() != 0 ){
+		 return $query->result_array();
+		}
+		else{
+		 return false;
+		}
+		
+	}
+	/**
+	 * get_user_address_info_by_id function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return object the user object
+	 */
+	public function get_user_address_info_by_id($user_id) {
+		
+		$this->db->from('address');
+		$this->db->where('user_id', $user_id);
+		$query = $this ->db->get();
+		if($query->num_rows() != 0 ){
+		 return $query->result_array();
+		}
+		else{
+		 return false;
+		}
+		
+	}
+	/**
+	 * get_user_picturs_by_id function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return object the user object
+	 */
+	public function get_user_pictures_by_id($user_id) {
+		
+		$this->db->from('picture');
+		$this->db->where('user_id', $user_id);
+		$query = $this ->db->get();
+		if($query->num_rows() != 0 ){
+		 return $query->result_array();
+		}
+		else{
+		 return false;
+		}
+		
+	}
+	/**
+	 * get_user_profile_picture_by_id function.
+	 * 
+	 * @access public
+	 * @param mixed $user_id
+	 * @return object the user object
+	 */
+	public function get_user_profile_picture_by_id($user_id) {
+		
+		$this->db->select('value');
+		$this->db->from('picture');
+		$this->db->where('user_id', $user_id);
+		$this->db->where('type', 'profile');
+		$this->db->where('del', '0');
+		$query = $this ->db->get();
+		if($query->num_rows() != 0 ){
+		 return $query->row_array(1);
+		}
+		else{
+		 return false;
+		}
+		
+	}
+
+	
+	
+}

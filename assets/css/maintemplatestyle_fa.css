@@ -1,0 +1,284 @@
+@charset "utf-8";
+
+
+body
+{
+	direction:rtl;	
+	padding:0px !important;
+	width: 100%;
+	position: absolute;
+	margin-top: 18px;
+}
+.container {
+	background: #ffffff !important;
+	margin-left: 30px;
+	margin-right: 30px;
+	padding: 15px;
+}
+
+.texterror{
+	border: 1px solid red !important;
+	color: red;
+}
+*{
+	outline: none;	
+	margin:0px;
+	padding:0px ;
+	direction:rtl;	
+	-webkit-border-image:#E0191D;
+	-moz-border-image:#E32225;	
+	
+}
+a
+{
+	text-decoration:none;
+	
+}
+
+a:hover  {
+	
+	 text-decoration: none !important;
+	 
+}
+.syntextcolor{
+    color: #4F345A !important;
+}
+.synbackcolor{
+    background: #4F345A !important;
+}
+.owner{
+background: #e0d3bc;
+
+}
+.total{
+	position:absolute;
+}
+#dashbord.total{
+	position:absolute;
+	top:35px;
+}
+
+#main
+{
+	top:5px;
+	height:	auto;
+	margin-left:auto;
+	margin-right:auto;
+	position:relative;
+
+
+}
+#header
+{
+	width:100%;
+	height:40px;
+	overflow:hidden;
+	position:fixed;
+	z-index:9999999;
+	background: #ffffff;
+}
+
+#headerstatic
+{
+	width:100%;
+	height:35px;
+	background:#e0d3bc;
+	overflow:hidden;
+	position:absolute;
+	top:0px;	
+	
+}
+#sitelogo
+{
+	text-align:left;
+	float:left;
+	margin-left: 10px;	
+}
+
+#sitesetting
+{
+	float:right;
+	overflow:hidden;
+	
+}
+#content{
+	width:100%;
+	height:auto;	
+}
+#dashbord {
+	width: 100%;
+	height: 50px;
+	position: fixed;
+	z-index: 9999999;
+	top: 40px;
+	background: #4F345A;
+	padding-top: 5px;	
+	
+}
+.dashbordcontent{
+	float:right;
+	width:auto;
+	height:40px;	
+	
+}
+
+#right_content{
+		
+	position:relative;
+	overflow:hidden;
+	height:auto;
+	float:right;
+	
+
+	
+}
+#center_content{
+		
+	position:relative;
+	overflow:hidden;
+	height:auto;
+	float:right;
+	padding-top:15px;
+	
+
+	
+}
+#left_content{
+		
+	position:relative;
+	overflow:hidden;
+	height:auto;
+	float:right;
+	padding-top:15px;	
+}
+/*--------------------*/
+#sitelogo   a{
+	
+	height: inherit;
+}
+#sitelogo	img{
+	width: 125px;
+
+}
+#sitelogo   span#one{
+		
+	color:#c18205;
+}
+
+#sitesetting ul{
+
+	height:inherit;
+	margin-top:9px;
+}
+#sitesetting ul li{
+	list-style:none;
+	float:right;
+	height:inherit;
+	margin-left:5px;
+	margin-right:5px;
+		
+}
+#sitesetting ul li img{
+
+	width:20px;
+	height:20px;
+	
+}
+ul#child{	
+width:150px;
+height:auto;
+position:absolute;
+right:70px;
+background:#E1E1D5;	
+display:none;
+}
+ul#child li{	
+float:none;	
+width:150px;
+border-bottom:1px solid #4F345A;
+}
+.signupcontent{
+	text-align:right;
+}
+.border-danger{
+border-color:red;
+	
+}
+.error{
+	box-shadow:none;
+}
+.sign_adver img{
+	
+	width:100%;
+	
+}
+#baseinfobox div{
+	
+	width:49%;
+}
+#baseinfobox div input{
+	
+	width:100%;
+	float:left;
+	
+}
+#baseinfobox div input:first-child{
+	
+	float:right !important;
+	
+}
+#profile
+{	
+	
+	margin-right:0px;
+	padding: 0px;
+}
+#profile ul 
+{
+ height:40px;	
+ list-style:none;
+}
+#profile ul li
+{
+ float:right;
+}
+#profile_name {
+	
+	
+	margin-top:10px;
+	font-size:16px;
+
+	color:#FFFFFF;
+
+}
+#profile_name:hover {
+	
+	text-shadow:1px 1px 1px #000000;
+}
+li#profile_pic {
+	
+	width:40px;
+	height:40px;
+	
+}
+
+li#profile_pic img {
+	
+	width:38px;
+	height:38px;
+	border-radius:50% 50% 50% 50% ;
+
+	
+
+}
+#profilesetting
+{
+	
+	height:40px;
+	float:right;
+	text-align:center;
+	padding-top:10px;
+	padding-left:15px;
+	
+	
+}
